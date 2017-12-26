@@ -14,7 +14,7 @@ router.get('/getcalendardata', function (req, res, next) { // 获取日历数据
         lasttime = rows[0].updatetime // 上次更新时间
         get_time_arr(lasttime)
       }else {
-        get_time_arr(1513872000000); // 如果表为空则从这个时刻开始 2017-12-22
+        get_time_arr(1483200000000); // 如果表为空则从这个时刻开始 2017-01-01
       }
     }
   })
@@ -49,26 +49,37 @@ router.get('/getcalendardata', function (req, res, next) { // 获取日历数据
       result.on('end', function () {
         var data = Buffer.concat(chunks, size)
         var all_data = JSON.parse(data).showapi_res_body
-        var date = JSON.stringify(all_data.date)
-        var stopList = JSON.stringify(all_data.stopList); // 停牌股票列表
-        var recoverList = JSON.stringify(all_data.recoverList); // 复牌股票列表
-        var startList = JSON.stringify(all_data.startList); // 首发上市股票列表
-        // var newStockNetPublishList = JSON.stringify(all_data.newStockNetPublishList); // 首发新股网上发行列表
-        var stockholderList = JSON.stringify(all_data.stockholderList); // 股东资格登记日列表
-        var addNewStockNetPublishList = JSON.stringify(all_data.addNewStockNetPublishList); // 增发新股上市列表
-        var shareRegistList = JSON.stringify(all_data.shareRegistList); // 分红转增股权登记列表
-        var shareDividendList = JSON.stringify(all_data.shareDividendList); // 除权除息列表
-        var stockAlarmList = JSON.stringify(all_data.stockAlarmList); // 退市风险警示列表
-        var updatetime = new Date().getTime(); // 最近更新时间
-        //   console.log(JSON.stringify(JSON.parse(data).showapi_res_body))
-        db.query(`insert into calendar(date,stopList,recoverList,startList,stockholderList,addNewStockNetPublishList,shareRegistList,shareDividendList,stockAlarmList,updatetime) values(${date},'${stopList}','${recoverList}','${startList}','${stockholderList}','${addNewStockNetPublishList}','${shareRegistList}','${shareDividendList}','${stockAlarmList}',${updatetime})`, function (err, rows) {
-          if (err) {
-            console.log(err)
-            res.send({status: '获取数据出错'})
-          }else {
-            // console.log('success')
-          }
-        })
+        if (all_data.ret_code == 0) {
+          var date = JSON.stringify(all_data.date)
+          var stopList = JSON.stringify(all_data.stopList); // 停牌股票列表
+          var recoverList = JSON.stringify(all_data.recoverList); // 复牌股票列表
+          var startList = JSON.stringify(all_data.startList); // 首发上市股票列表
+          // var newStockNetPublishList = JSON.stringify(all_data.newStockNetPublishList); // 首发新股网上发行列表
+          var stockholderList = JSON.stringify(all_data.stockholderList); // 股东资格登记日列表
+          var addNewStockNetPublishList = JSON.stringify(all_data.addNewStockNetPublishList); // 增发新股上市列表
+          var shareRegistList = JSON.stringify(all_data.shareRegistList); // 分红转增股权登记列表
+          var shareDividendList = JSON.stringify(all_data.shareDividendList); // 除权除息列表
+          var stockAlarmList = JSON.stringify(all_data.stockAlarmList); // 退市风险警示列表
+          var updatetime = new Date().getTime(); // 最近更新时间
+          //   console.log(JSON.stringify(JSON.parse(data).showapi_res_body))
+          db.query(`insert into calendar(date,stopList,recoverList,startList,stockholderList,addNewStockNetPublishList,shareRegistList,shareDividendList,stockAlarmList,updatetime) values(${date},'${stopList}','${recoverList}','${startList}','${stockholderList}','${addNewStockNetPublishList}','${shareRegistList}','${shareDividendList}','${stockAlarmList}',${updatetime})`, function (err, rows) {
+            if (err) {
+              console.log(err)
+              res.send({status: '获取数据出错'})
+            }else {
+            }
+          })
+        }else { // 当天没有数据的情况
+          var date1 = (datetime.slice(0, 4)) + '-' + (datetime.slice(4, 6)) + '-' + (datetime.slice(6))
+          db.query(`insert into calendar(date) values('${date1}')`, function (err, rows) {
+            if (err) {
+              console.log(err)
+              res.send({ status: '获取数据出错' })
+            } else {
+            }
+          })
+          console.log(all_data, datetime)
+        }
       })
     }).on('error', function (e) {
       console.log('Got error: ' + e.message)
