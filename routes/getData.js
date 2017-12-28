@@ -71,7 +71,7 @@ router.get('/getcalendardata', function (req, res, next) { // 获取日历数据
           })
         }else { // 当天没有数据的情况
           var date1 = (datetime.slice(0, 4)) + '-' + (datetime.slice(4, 6)) + '-' + (datetime.slice(6))
-          db.query(`insert into calendar(date) values('${date1}')`, function (err, rows) {
+          db.query(`insert into calendar(date,stopList,recoverList,startList,stockholderList,addNewStockNetPublishList,shareRegistList,shareDividendList,stockAlarmList,updatetime) values('${date1}','[]','[]','[]','[]','[]','[]','[]','[]','[]')`, function (err, rows) {
             if (err) {
               console.log(err)
               res.send({ status: '获取数据出错' })

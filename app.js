@@ -10,6 +10,7 @@ var ejs = require('ejs')
 var index = require('./routes/index')
 var users = require('./routes/users')
 var stock = require('./routes/stock')
+var calendar = require('./routes/calendar') // 投资日历
 var getdata = require('./routes/getData')
 
 var app = express()
@@ -38,6 +39,7 @@ app.use('/', index)
 app.use('/users', users)
 app.use('/', stock)
 app.use('/getdata', getdata)
+app.use('/', calendar)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
