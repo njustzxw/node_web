@@ -13,7 +13,7 @@ router.get('/calendar', function (req, res, next) { // 日历数据
       }else {
         for (let i in rows) {
           let stopList = JSON.parse(rows[i].stopList)
-          let recoverList = JSON.parse(rows[i].recoverList)
+          let recoverList = JSON.parse(rows[i].recoverList) 
           if (stopList.length && recoverList.length) {
             var obj_per = {stopnum: '',stopeg: '',recovernum: '',recovereg: ''}
             var date = rows[i].date
