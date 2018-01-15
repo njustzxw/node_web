@@ -21,4 +21,8 @@
 
 8.cnpm install superagent（乱码）
 
+9.cnpm install async
+
+10.cnpm install nodeweibo
+
 启动项目：cnpm start    浏览器输入地址http://127.0.0.1:3000/即可使用
