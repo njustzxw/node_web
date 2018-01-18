@@ -1,6 +1,9 @@
+/*+++++++++++++++++++++++++++++++++
+获取热门话题下的所有微博
+++++++++++++++++++++++++++++++++++++*/
 var express = require('express')
 var router = express.Router()
-var db = require('../db.js')
+var db = require('../../db.js')
 var http = require('http')
 var request = require('request')
 var cheerio = require('cheerio') // node 的jquery

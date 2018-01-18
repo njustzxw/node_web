@@ -1,6 +1,10 @@
+/*--------------------------------------------------------------
+ 指定某个用户的id  然后从weibo_person表中查找出该用户的所有微博id
+ 一般是先用allweibo_Spider 爬取出来用户的个人信息到person表里，在运行此文件
+ -------------------------------------------------------------*/
 var express = require('express')
 var router = express.Router()
-var db = require('../db.js')
+var db = require('../../db.js')
 var http = require('http')
 var request = require('request')
 var cheerio = require('cheerio') // node 的jquery
@@ -10,9 +14,6 @@ let superagent = require('superagent'); //发起请求
 var async = require('async'); //异步编程
 charset(superagent);
 
-/*--------------------------------------------------------------
- 指定某个用户的id  然后从weibo_person表中查找出该用户的所有微博id
- -------------------------------------------------------------*/
 var userid = 3055675935
 
 /*--------------------------------------------------------------
@@ -89,7 +90,7 @@ function get_comment_data(weiboid, page) {
                     var weiboid = url.slice(-16) //原微博id
                     db.query(`insert into weibo_comment(per_num,commentid,weiboid,created_at,source,text,reply_id,reply_text,comment_userid,comment_screen_name,verified)values(${per_num},'${commentid}','${weiboid}','${created_at}','${source}','${text.replace(/'/g, '')}','${reply_id}','${reply_text.replace(/'/g, '')}',${comment_userid},'${comment_screen_name}','${verified}')`, function(err1, rows1) {
                         if (err1) {
-                            console.log(err1)
+                            return
                         } else {
                             // console.log('更新记录数成功')
                         }

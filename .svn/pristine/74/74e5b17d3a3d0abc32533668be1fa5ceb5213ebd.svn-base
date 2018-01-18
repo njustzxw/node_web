@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 6ad1d317f188b98fe1129757b4d9b38b5995521b Administrator <Administrator@admin-PC.(none)> 1514970202 +0800	clone: from https://github.com/njustzxw/node_web.git
+6ad1d317f188b98fe1129757b4d9b38b5995521b 653e36d9320399e6725b836692aa4c42e4bc15c6 yourname <njust_zxw@163.com> 1514970767 +0800	commit: 抓取热搜新闻
+653e36d9320399e6725b836692aa4c42e4bc15c6 f867f50bb078c9b6140402ffe28a42a9639c9756 yourname <njust_zxw@163.com> 1514970874 +0800	commit: 提交说明
+f867f50bb078c9b6140402ffe28a42a9639c9756 e357dbebf6cbd60ba7921393852b30e525c9b6d0 yourname <njust_zxw@163.com> 1515749656 +0800	commit: 爬虫部分功能实现
+e357dbebf6cbd60ba7921393852b30e525c9b6d0 5f9a2f94b84fc443e159f8821c69bf4cdee5375c yourname <njust_zxw@163.com> 1515749693 +0800	pull origin master: Merge made by the 'recursive' strategy.
+5f9a2f94b84fc443e159f8821c69bf4cdee5375c bda073f0226e708e16b7d0f0a14fbc92dd29c52e yourname <njust_zxw@163.com> 1515978473 +0800	commit: 爬虫修改
