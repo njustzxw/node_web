@@ -1,0 +1,110 @@
+/*-----------------------------------
+    新浪财经个股资讯所有新闻
+    http://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllNewsStock/symbol/sz300104.phtml
+-------------------------------------*/
+var express = require('express')
+var router = express.Router()
+var db = require('../../db.js')
+var http = require('http')
+var request = require('request')
+var cheerio = require('cheerio') // node 的jquery
+var iconv = require('iconv-lite') //转码
+let charset = require('superagent-charset'); //解决乱码问题:
+let superagent = require('superagent'); //发起请求
+var async = require('async'); //异步编程
+charset(superagent);
+var code = 'sh600519' //乐视 茅台
+var table = 'xlcj_news_' + code
+var pagenum = 139 //乐视218   茅台139
+    // getNewsnum(code, pagenum) //第一步（注释掉第二个方法）  
+gettext() //第二步（注释掉第一个方法）
+
+
+
+
+function getNewsnum(code, pagenum) { //手动查总页数
+    // var url = 'http://vip.stock.finance.sina.com.cn/corp/view/vCB_AllNewsStock.php?symbol=' + code + '&Page=1'
+    var arr = []
+    for (let i = pagenum - 138; i <= pagenum; i++) {
+        arr.push(i)
+    }
+    async.map(arr, function(page) { //异步循环
+        getkey_news(page, code) //
+    }, function(err, results) {
+        if (err) {
+            console.log(err)
+        } else {}
+    })
+
+}
+
+function getkey_news(page, code) {
+    var url = 'http://vip.stock.finance.sina.com.cn/corp/view/vCB_AllNewsStock.php?symbol=' + code + '&Page=' + page //新闻
+    superagent
+        .get(url)
+        .charset('gb2312') //取决于网页的编码方式
+        .end(function(error, response) {
+            if (!error && response.statusCode == 200) {
+                var $ = cheerio.load(response.text);
+                for (let i = 0; i < $('.datelist ul a').length; i++) {
+                    var url = $($('.datelist ul a')[i]).attr('href') //url
+                    var title = $($('.datelist ul a')[i]).text() //标题内容
+                        // var time = url.split('/')[5] //时间
+                        // var id = url.split('/')[url.split('/').length - 1].slice(0, -6) + Math.ceil(Math.random() * 10000)
+                    console.log(url, title)
+                    db.query(`insert into ${table}(title,url,fag)values('${title}','${url}',${page})`, function(err1, rows1) {
+                        if (err1) {
+                            console.log(err1)
+                            return
+                        } else {}
+                    })
+                }
+            }
+        })
+}
+
+function gettext() {
+    var num = 140
+    db.query(`select url from ${table} where text IS NULL and fag  between '${num-139}' and '${num}'`,
+        function(err1, rows1) {
+            var arr = []
+            for (i in rows1) {
+                arr.push(rows1[i].url)
+            }
+            async.map(arr, function(url) { //异步循环
+                getArticle(url) //爬取用户所有微博
+            }, function(err, results) {
+                if (err) {
+                    console.log(err)
+                } else {}
+            })
+        })
+}
+
+function getArticle(url) {
+    superagent
+        .get(url)
+        .charset('gbk') //取决于网页的编码方式
+        .end(function(error, response) {
+            // console.log(response.statusCode)
+            if (!error && response.statusCode == 200) {
+                var $ = cheerio.load(response.text);
+                var text = $('#artibody p').text().replace(/\s+/g, "").replace(/'/g, "’").slice(0, 9000)
+                var time1 = ($('#pub_date').length ? $('#pub_date').text() : ($('.time-source').length ? $('.time-source').text() : $('.date').text())).replace(/\s+/g, "")
+                var time = formate(time1)
+                var source = time1.length > 16 ? time1.slice(16) : ($('#media_name').length ? $('#media_name').text() : $('.source').text()).replace(/'/g, '’')
+                console.log(time, source, url)
+                db.query(`update ${table} set  time = '${time}', source = '${source}',text = '${text}' where url = '${url}'`, function(err2, rows2) {
+                    if (err2) {
+                        console.log(err2)
+                        return
+                    } else {}
+
+                })
+            }
+        })
+}
+
+function formate(date) {
+    return date.slice(0, 4) + '-' + date.slice(5, 7) + '-' + date.slice(8, 10) + ' ' + date.slice(11, 16)
+}

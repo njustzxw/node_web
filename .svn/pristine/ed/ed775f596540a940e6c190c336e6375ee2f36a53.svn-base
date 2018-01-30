@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job version="11.2">
+<syncjob>
+<fkcheck check="yes" />
+<twowaysync twoway="yes" />
+<passwords isencoded="yes" />
+<source>
+<host>localhost</host>
+<user>remote</user>
+<pwd></pwd>
+<port>3307</port>
+<compressed>1</compressed>
+<cleartext>0</cleartext>
+<sessiontimeout>28800</sessiontimeout>
+<ssl>0</ssl>
+<sslauth>0</sslauth>
+<clientkey></clientkey>
+<clientcert></clientcert>
+<cacert></cacert>
+<cipher></cipher>
+<charset></charset>
+<database>data</database>
+</source>
+<target>
+<host>192.168.1.51</host>
+<user>root</user>
+<pwd>Obe3Og==</pwd>
+<port>3307</port>
+<compressed>1</compressed>
+<cleartext>0</cleartext>
+<ssl>0</ssl>
+<sslauth>0</sslauth>
+<clientkey></clientkey>
+<clientcert></clientcert>
+<cacert></cacert>
+<cipher></cipher>
+<charset></charset>
+<database>test</database>
+</target>
+<tables all="yes" />
+<sync_action type="directsync" />
+<abortonerror abort="no" />
+<sendreport send="no" /></syncjob>
+</job>

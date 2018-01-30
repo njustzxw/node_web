@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<job version="11.2">
+<odbcimport>
+<fkcheck check="no" />
+<passwords isencoded="yes" />
+<source>
+<host>localhost</host>
+<user>root</user>
+<pwd>Obe3Og==</pwd>
+<port>3306</port>
+<compressed>1</compressed>
+<cleartext>0</cleartext>
+<sessiontimeout>28800</sessiontimeout>
+<ssl>0</ssl>
+<sslauth>0</sslauth>
+<clientkey></clientkey>
+<clientcert></clientcert>
+<cacert></cacert>
+<cipher></cipher>
+<charset></charset>
+<database>test</database>
+</source>
+<dsn type="system">
+<name>manuscr</name>
+<user/>
+<pwd/>
+</dsn>
+<import source="data">
+</import>
+<export target="data">
+</export>
+<tables all="no">
+<table source="table0.csv" target="table0_csv" type="InnoDB" index="yes" foreignkey="yes">
+<ddl onconflict="import"/>
+<dml import="yes" truncatetablecontent="no" onconflict="update" />
+<triggers>
+<delete>no</delete>
+</triggers>
+<whereclause></whereclause>
+<columns>
+<column>
+<source>NUMBER</source>
+<target>NUMBER</target>
+<type>int</type>
+<length>10</length>
+<default></default>
+<primary>no</primary>
+<binary>no</binary>
+<notnull>no</notnull>
+<unsigned>no</unsigned>
+<autoincr>no</autoincr>
+<zerofill>no</zerofill>
+</column>
+<column>
+<source>CODE</source>
+<target>CODE</target>
+<type>int</type>
+<length>10</length>
+<default></default>
+<primary>no</primary>
+<binary>no</binary>
+<notnull>no</notnull>
+<unsigned>no</unsigned>
+<autoincr>no</autoincr>
+<zerofill>no</zerofill>
+</column>
+</columns>
+</table>
+<table source="table1.csv" target="table1_csv" type="InnoDB" index="yes" foreignkey="yes">
+<ddl onconflict="import"/>
+<dml import="yes" truncatetablecontent="no" onconflict="update" />
+<triggers>
+<delete>no</delete>
+</triggers>
+<whereclause></whereclause>
+<columns>
+<column>
+<source>Name</source>
+<target>Name</target>
+<type>varchar</type>
+<length>255</length>
+<default></default>
+<primary>no</primary>
+<binary>no</binary>
+<notnull>no</notnull>
+<unsigned>yes</unsigned>
+<autoincr>no</autoincr>
+<zerofill>no</zerofill>
+</column>
+<column>
+<source>Number</source>
+<target>Number</target>
+<type>int</type>
+<length>10</length>
+<default></default>
+<primary>no</primary>
+<binary>no</binary>
+<notnull>no</notnull>
+<unsigned>no</unsigned>
+<autoincr>no</autoincr>
+<zerofill>no</zerofill>
+</column>
+</columns>
+</table>
+</tables>
+<abortonerror>yes</abortonerror>
+<sendreport send="no" /></odbcimport>
+</job>

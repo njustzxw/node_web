@@ -17,8 +17,8 @@ var async = require('async'); //异步编程
 var pagenum = 38 //预定义的要抓去的页数
 
 
-geturl() //第一步 国内财经新闻的url 
-    // gettext() //第二步 根据第一步的url获取内容（使用第一个方法时注释掉第二个，使用第二个方法时注释掉第一个，）
+// geturl() //第一步 国内财经新闻的url 
+// gettext() //第二步 根据第一步的url获取内容（使用第一个方法时注释掉第二个，使用第二个方法时注释掉第一个，）
 
 
 function geturl() {
@@ -48,7 +48,7 @@ function getData(num) {
                 var title = alldata[j].Title
                 var url = alldata[j].Url
                 var createdTime = alldata[j].CreatedTime
-                db.query(`insert into zjzx_guoneicaijing(id,title,url,time)values(${id},'${title}','${url}','${createdTime}')`, function(err1, rows1) {
+                db.query(`insert into zjzx_guoneicaijing(id,title,url,time)values(${id},'${title}','${url}','${formate(createdTime)}')`, function(err1, rows1) {
                     if (err1) {
                         return
                     } else {}
@@ -59,7 +59,7 @@ function getData(num) {
 }
 
 function gettext() {
-    db.query(`select url from zjzx_guoneicaijing`,
+    db.query(`select url from zjzx_guoneicaijing where text IS NULL`,
         function(err1, rows1) {
             var arr = []
             for (i in rows1) {
@@ -77,12 +77,11 @@ function gettext() {
 }
 
 function getArticle(url) {
-    // console.log(url)
     request(url, function(error, response, body) {
         if (!error && response.statusCode == 200) {
             $ = cheerio.load(body)
             var text = $('.Article').text().replace(/\ +/g, "").replace(/[\r\n]/g, "").replace(/'/g, '’').slice(0, 9000) || $('#Content').text().replace(/\ +/g, "").replace(/'/g, '’').replace(/[\r\n]/g, "").slice(0, 9000)
-                // console.log(url)
+                // console.log(text)
             db.query(`update zjzx_guoneicaijing set text = '${text}' where url = '${url}'`, function(err2, rows2) {
                 if (err2) {
                     console.log(err2)
@@ -91,5 +90,41 @@ function getArticle(url) {
 
             })
         }
+    })
+}
+
+function formate(date) {
+    if (date.slice(0, 2) < 5) {
+        return '2018-' + date
+    } else {
+        return '2017-' + date
+    }
+}
+gx()
+
+function gx() {
+    db.query(`select time from zjzx_guoneicaijing where time like '12%'`, function(err1, rows1) {
+        var arr = []
+        for (i in rows1) {
+            arr.push(rows1[i].time)
+                // console.log(rows1[i].url)
+        }
+        async.map(arr, function(time) { //异步循环
+            gx1(time) //爬取用户所有微博
+        }, function(err, results) {
+            if (err) {
+                console.log(err)
+            } else {}
+        })
+    })
+}
+
+function gx1(time) {
+    db.query(`update zjzx_guoneicaijing set time1 = '${formate(time)}' where time = '${time}'`, function(err2, rows2) {
+        if (err2) {
+            console.log(err2)
+            return
+        } else {}
+
     })
 }

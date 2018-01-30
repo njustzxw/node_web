@@ -1,128 +1,140 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>test</title>
     <link rel='stylesheet' href='stylesheets/style.css' />
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 </head>
+
 <body>
-<h1></h1>
-<div id='main'>
-    <div>
-        名字：
-        <input type="text" v-model="name">
+    <h1></h1>
+    <div id='main'>
+        <div>
+            名字：
+            <input type="text" v-model="name">
+        </div>
+        <div>
+            密码：
+            <input type="password" v-model="kwd">
+        </div>
+        <button @click="dl()">登陆</button>
+        <button @click="hq()">获取</button>
+        <button @click="addflag=!addflag">添加用户</button>
+        <p>{{status}}</p>
+        <table v-show="addflag">
+            <tr>
+                <td v-for='item in listhead'>{{item}}</td>
+            </tr>
+            <tr>
+                <td><input type="text" v-model="addname" placeholder="张三"></td>
+                <td><input type="text" v-model="addsex" placeholder="男"></td>
+                <td><input type="text" v-model="addage" placeholder="18"></td>
+                <td><input type="text" v-model="addscore" placeholder="99"></td>
+                <td>
+                    <button @click="btntrue()">确认添加</button>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td v-for='item in listhead'>{{item}}</td>
+            </tr>
+            <tr v-for='person in peoplelist'>
+                <td>{{person.name}}</td>
+                <td>{{person.sex}}</td>
+                <td>{{person.age}}</td>
+                <td>{{person.score}}</td>
+                <td>
+                    <button @click="deleteuser(person.name)">删除</button>
+                    <button>修改</button>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div>
-        密码：
-        <input type="password" v-model="kwd">
-    </div>
-    <button @click="dl()">登陆</button>
-    <button @click="hq()">获取</button>
-    <button @click="addflag=!addflag">添加用户</button>
-    <p>{{status}}</p>
-    <table v-show="addflag">
-        <tr>
-            <td v-for='item in listhead'>{{item}}</td>
-        </tr>
-        <tr >
-            <td><input type="text" v-model="addname" placeholder="张三"></td>
-            <td><input type="text" v-model="addsex" placeholder="男"></td>
-            <td><input type="text" v-model="addage" placeholder="18"></td>
-            <td><input type="text" v-model="addscore" placeholder="99"></td>
-            <td>
-                <button @click="btntrue()">确认添加</button>
-            </td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td v-for='item in listhead'>{{item}}</td>
-        </tr>
-        <tr v-for='person in peoplelist'>
-            <td>{{person.name}}</td>
-            <td>{{person.sex}}</td>
-            <td>{{person.age}}</td>
-            <td>{{person.score}}</td>
-            <td>
-                <button @click="deleteuser(person.name)">删除</button>
-                <button>修改</button>
-            </td>
-        </tr>
-    </table>
-</div>
-<script src="javascripts/jquery-3.2.1.min.js"></script>
-<script src="javascripts/vue.js"></script>
-<script src="javascripts/bootstrap.min.js" defer></script>
-<script>
-    function dorequest(data,url,successcaalback,failcallback){
-        $.ajax({
-            data:data,
-            url:url,
-            type:'GET',
-            success:function(result){
-                successcaalback(result)
+    <script src="javascripts/jquery-3.2.1.min.js"></script>
+    <script src="javascripts/vue.js"></script>
+    <script src="javascripts/bootstrap.min.js" defer></script>
+    <script>
+        function dorequest(data, url, successcaalback, failcallback) {
+            $.ajax({
+                data: data,
+                url: url,
+                type: 'GET',
+                success: function(result) {
+                    successcaalback(result)
+                },
+                error: function(result) {
+                    failcallback(result)
+                }
+            })
+        }
+        new Vue({
+            el: "#main",
+            data: {
+                name: 'zxw',
+                kwd: 123,
+                status: 111,
+                listhead: ['姓名', '性别', '年龄', '分数', '操作'],
+                peoplelist: [],
+                addflag: false,
+                addname: '',
+                addage: '',
+                addsex: '',
+                addscore: '',
             },
-            error:function(result){
-                failcallback(result)
+            methods: {
+                dl: function() {
+                    var that = this;
+                    dorequest({
+                        name: that.name,
+                        key: that.kwd
+                    }, 'login', function(result) {
+                        if (result.status) {
+                            console.log(result)
+                            that.status = result.status
+                            alert('成功')
+                        }
+                    }, function(result) {
+                        alert('失败')
+                    })
+                },
+                hq: function() {
+                    var that = this;
+                    dorequest({}, 'getList', function(result) {
+                        that.peoplelist = result;
+                    }, function(result) {
+                        console.log(2)
+                    })
+                },
+                deleteuser: function(name) {
+                    var that = this;
+                    dorequest({
+                        name: name
+                    }, 'delete', function(result) {
+                        alert('删除成功！')
+                        that.hq()
+                    }, function(result) {
+                        alert('删除失败！')
+                    })
+                },
+                btntrue: function() {
+                    var that = this;
+                    dorequest({
+                        name: that.addname,
+                        age: that.addage,
+                        sex: that.addsex,
+                        score: that.addscore
+                    }, 'adduser', function(result) {
+                        alert('增加成功！');
+                        that.hq();
+                    }, function() {
+                        alert('增加失败！')
+                    })
+                }
             }
         })
-    }
-    new Vue({
-        el:"#main",
-        data:{
-            name:'zxw',
-            kwd:123,
-            status:111,
-            listhead:['姓名','性别','年龄','分数','操作'],
-            peoplelist:[],
-            addflag:false,
-            addname:'',
-            addage:'',
-            addsex:'',
-            addscore:'',
-        },
-        methods:{
-            dl:function(){
-                var that = this;
-                dorequest({name:that.name,key:that.kwd},'login',function(result){
-                    if(result.status){
-                        console.log(result)
-                        that.status = result.status
-                        alert('成功')
-                    }
-                },function(result){
-                    alert('失败')
-                })
-            },
-            hq:function () {
-                var that = this;
-                dorequest({},'getList',function (result) {
-                    that.peoplelist = result;
-                },function (result) {
-                    console.log(2)
-                })
-            },
-            deleteuser:function(name){
-                var that = this;
-                dorequest({name:name},'delete',function(result){
-                    alert('删除成功！')
-                    that.hq()
-                },function(result){
-                    alert('删除失败！')
-                })
-            },
-            btntrue:function () {
-                var that = this;
-                dorequest({name:that.addname,age:that.addage,sex:that.addsex,score:that.addscore},'adduser',function(result){
-                    alert('增加成功！');
-                    that.hq();
-                },function(){
-                    alert('增加失败！')
-                })
-            }
-        }
-    })
-</script>
+    </script>
 </body>
 
 </html>

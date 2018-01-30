@@ -17,8 +17,8 @@ var async = require('async'); //异步编程
 var pagenum = 38 //预定义的要抓去的页数
 
 
-geturl() //第一步 获取证券要闻的url 
-    // gettext() //第二步 根据第一步的url获取内容（使用第一个方法时注释掉第二个，使用第二个方法时注释掉第一个，）
+// geturl() //第一步 获取证券要闻的url 
+gettext() //第二步 根据第一步的url获取内容（使用第一个方法时注释掉第二个，使用第二个方法时注释掉第一个，）
 
 
 function geturl() {
@@ -59,7 +59,7 @@ function getData(num) {
 }
 
 function gettext() {
-    db.query(`select url from zjzx_zhengquanyaowen`,
+    db.query(`select url from zjzx_zhengquanyaowen where text IS NULL`,
         function(err1, rows1) {
             var arr = []
             for (i in rows1) {
@@ -77,7 +77,7 @@ function gettext() {
 }
 
 function getArticle(url) {
-    // console.log(url)
+    console.log(url)
     request(url, function(error, response, body) {
         if (!error && response.statusCode == 200) {
             $ = cheerio.load(body)
